@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+<item android:id="@+id/list_item1"
+    android:title="ADD"
+    android:visible="true"
+    app:showAsAction="always"
+    />
+    <group>
+ <item android:id="@+id/list_item2"
+     android:title="sendfeedback"/>
+        <item android:id="@+id/list_item3"
+            android:title="aboutus"/>
+
+    </group>
+</menu>
