@@ -13,6 +13,8 @@ import android.support.v4.app.NotificationCompat;
 import static android.content.Context.NOTIFICATION_SERVICE;
 
 public class Alarmmanager extends BroadcastReceiver{
+
+
     @Override
     public void onReceive(Context context, Intent intent) {
         NotificationManager manager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
@@ -30,7 +32,7 @@ public class Alarmmanager extends BroadcastReceiver{
         PendingIntent pendingIntent1 = PendingIntent.getActivity(context,1,intent2,0);
         builder.setContentIntent(pendingIntent1);
         Notification notification = builder.build();
-        manager.notify(1,notification);
+        manager.notify((int)System.currentTimeMillis(),notification);
 
 
     }

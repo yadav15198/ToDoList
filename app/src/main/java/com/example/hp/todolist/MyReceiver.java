@@ -11,6 +11,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
+import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 import java.util.Calendar;
 import java.util.Date;
@@ -43,17 +45,31 @@ public class MyReceiver extends BroadcastReceiver {
                     SmsMessage smsMessage = SmsMessage.createFromPdu((byte[]) sms[i]);
 
                      smsBody = smsMessage.getDisplayMessageBody();
+                    // Log.d("body",smsBody+"");
                     address = smsMessage.getDisplayOriginatingAddress();
                     timeStamp = smsMessage.getTimestampMillis();
+                   // Log.d("time",timeStamp+"");
+
                 }
               todo todos = new todo(smsBody,address);
-              todos.setTime(String.valueOf(timeStamp));
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(timeStamp);
+                int year = calendar.get(Calendar.YEAR);
+                int month = calendar.get(Calendar.MONTH);
+                int day =  calendar.get(Calendar.DATE);
+
+                int hours = calendar.get(Calendar.HOUR);
+                int minutes = calendar.get(Calendar.MINUTE);
+                 String date = day +"/" + month +"/"+ year+"";
+                 String time = hours +":"+ minutes+"";
+
               ToDo_Open_Helper toDo_open_helper = ToDo_Open_Helper.getInstance(context);
                 SQLiteDatabase database = toDo_open_helper.getWritableDatabase();
                 ContentValues contentValues = new ContentValues();
-                contentValues.put(TABLE_NAME,smsBody);
-                contentValues.put(toDo_open_helper.COL_NAME,address);
-                contentValues.put(toDo_open_helper.COL_DESC,timeStamp);
+                contentValues.put(ToDo_Open_Helper.COL_DESC,smsBody);
+                contentValues.put(ToDo_Open_Helper.COL_NAME,address);
+                contentValues.put(ToDo_Open_Helper.COL_TIME,time);
+                contentValues.put(ToDo_Open_Helper.COL_DATE,date);
                  long id = database.insert(TABLE_NAME,null,contentValues);
                 Toast.makeText(context, "content added", Toast.LENGTH_SHORT).show();
             }

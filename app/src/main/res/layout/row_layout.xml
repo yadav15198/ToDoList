@@ -3,28 +3,51 @@
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-<TextView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:id="@+id/text1"
-    android:layout_marginTop="5dp"
-    android:text="name"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/text3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginTop="5dp"
+            android:text="01/07/2018"
+            android:textColor="@color/colorAccent"
+            android:textSize="26dp" />
+
+        <TextView
+            android:id="@+id/text4"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginRight="5dp"
+            android:text="10:00"
+            android:textColor="@color/babloo"
+            android:textSize="26dp" />
+
+    </LinearLayout>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
     <TextView
-         android:id="@+id/text2"
-        android:layout_width="wrap_content"
+        android:id="@+id/text1"
+        android:layout_width="334dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="name"
+        android:textColor="@color/babloo"
+        android:textSize="26dp" />
+    <TextView  android:id="@+id/text2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="26dp"
+        android:gravity="center"
+        android:textColor="@color/colorPrimaryDark"
         android:layout_marginTop="5dp"
         android:text="description"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/text3"
-        android:layout_marginTop="5dp"
-        android:text="01/07/2018"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/text4"
-        android:layout_marginRight="5dp"
-        android:text="10:00"/>
+
+
+
 </LinearLayout>

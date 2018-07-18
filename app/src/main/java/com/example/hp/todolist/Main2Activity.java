@@ -1,6 +1,8 @@
 package com.example.hp.todolist;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.strictmode.WebViewMethodCalledOnWrongThreadViolation;
@@ -24,8 +26,8 @@ public class Main2Activity extends AppCompatActivity {
   Button button;
     String edit1,time1,date1;
     String edit2;
-    EditText timeEditText;
-    EditText dateEditText;
+    TextView timeEditText;
+    TextView dateEditText;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,10 +95,28 @@ public class Main2Activity extends AppCompatActivity {
               intent.putExtra(MainActivity.desc_name,edit2);
               intent.putExtra(MainActivity.date_string,date1);
               intent.putExtra(MainActivity.time_String,time1);
-              setResult(2,intent);
+                setResult(2,intent);
+                String date[] = date1.split("/");
+                String time[] = time1.split(":");
+                int day = Integer.parseInt(date[0]);
+                int month = Integer.parseInt(date[1]);
+                int year = Integer.parseInt(date[2]);
+                int hour = Integer.parseInt(time[0]);
+                int min = Integer.parseInt(time[1]);
+                Calendar calendar = Calendar.getInstance();
+                calendar.clear();
+                calendar.set(year,month-1,day,hour,min);
+               long alarmtime= calendar.getTimeInMillis();
+                AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+               Intent intent2 = new Intent(getApplicationContext(),Alarmmanager.class);
+               final PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(),1,intent2,0);
+               long currentTime = alarmtime;
+               alarmManager.set(AlarmManager.RTC_WAKEUP,currentTime ,pendingIntent);
+
               finish();
             }
         });
+
     }
 
 }

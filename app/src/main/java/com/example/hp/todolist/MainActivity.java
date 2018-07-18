@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 
+import static com.example.hp.todolist.ToDo_Open_Helper.COL_ID;
 import static com.example.hp.todolist.ToDo_Open_Helper.COL_NAME;
 import static com.example.hp.todolist.ToDo_Open_Helper.COL_DESC;
 import static com.example.hp.todolist.ToDo_Open_Helper.COL_DATE;
@@ -53,26 +54,27 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public static final String desc_name = "desccripion";
     public static final String date_string = "date";
     public static final String time_String = "time";
+    public static final String Id_string = "id";
     ToDo_Open_Helper toDo_open_helper;
     SQLiteDatabase database;
+    MyReceiver myReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.e("MyActivity","oncreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-      toDo_open_helper = ToDo_Open_Helper.getInstance(this);
-      database = toDo_open_helper.getReadableDatabase();
-      //  String [] columns = {toDo_open_helper.COL_NAME, toDo_open_helper.COL_DESC};
-        Cursor cursor = database.query(toDo_open_helper.TABLE_NAME,null ,null,null,null,null,null);
+        toDo_open_helper = ToDo_Open_Helper.getInstance(this);
+        database = toDo_open_helper.getReadableDatabase();
+        //  String [] columns = {toDo_open_helper.COL_NAME, toDo_open_helper.COL_DESC};
+        Cursor cursor = database.query(ToDo_Open_Helper.TABLE_NAME,null ,null,null,null,null,null);
         if(cursor.moveToNext()) {
             while (cursor.moveToNext()) {
                 String name = cursor.getString(cursor.getColumnIndex(COL_NAME));
                 String description = cursor.getString(cursor.getColumnIndex(COL_DESC));
                 String date = cursor.getString(cursor.getColumnIndex(COL_DATE));
                 String time = cursor.getString(cursor.getColumnIndex(COL_TIME));
-                int id = cursor.getInt(cursor.getColumnIndex(ToDo_Open_Helper.COL_ID));
+                long id = cursor.getLong(cursor.getColumnIndex(COL_ID));
                 todo todos = new todo(name, description);
                 todos.setTime(time);
                 todos.setDate(date);
@@ -82,15 +84,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
         cursor.close();
 
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        Intent intent = new Intent(this,AlarmManager.class);
-        final PendingIntent pendingIntent = PendingIntent.getBroadcast(this,1,intent,0);
-        long currentTime = System.currentTimeMillis();
-        alarmManager.set(AlarmManager.RTC_WAKEUP,currentTime +5*1000,pendingIntent);
 
-
-//        IntentFilter intentFilter = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
-//        registerReceiver(myReceiver,intentFilter);
+//     IntentFilter intentFilter = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
+//       registerReceiver(myReceiver,intentFilter);
 
 
         list1 = findViewById(R.id.list1);
@@ -130,14 +126,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-          Intent intent = new Intent(MainActivity.this,Main3Activity.class);
-          todo todo = todoArrayList.get(i);
-          intent.putExtra(title_name,todo.name);
-          intent.putExtra(desc_name,todo.description);
-          intent.putExtra(date_string,todo.date);
-          intent.putExtra(time_String,todo.time);
-          startActivity(intent);
+        Intent intent = new Intent(MainActivity.this,Main3Activity.class);
+        todo todo = todoArrayList.get(i);
+        intent.putExtra(title_name,todo.name);
+        intent.putExtra(desc_name,todo.description);
+        intent.putExtra(date_string,todo.date);
+        intent.putExtra(time_String,todo.time);
+        intent.putExtra("position",i);
+        intent.putExtra(Id_string, todo.getID());
+        startActivityForResult(intent,5);
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -165,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             intent.setAction(Intent.ACTION_VIEW);
             Uri uri = Uri.parse("https://codingninjas.in");
             intent.setData(uri);
-            startActivity(intent);
+
         }
         return true;
     }
@@ -178,30 +177,46 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 String desc = data.getStringExtra(MainActivity.desc_name);
                 String time = data.getStringExtra(MainActivity.date_string);
                 String date = data.getStringExtra(MainActivity.time_String);
-                todo tod = new todo(name,desc);
+                //long  id = data.getStringExtra(MainActivity.Id_string);
+                todo tod = new todo(name, desc);
                 tod.setDate(date);
                 tod.setTime(time);
-             //  todoArrayList.add(tod);
+                //  todoArrayList.add(tod);
 //                todoadap.notifyDataSetChanged();
-               ToDo_Open_Helper  toDo_open_helper = ToDo_Open_Helper.getInstance(this);
-                database = toDo_open_helper.getWritableDatabase();
+                ToDo_Open_Helper toDo_open_helper = ToDo_Open_Helper.getInstance(this);
+                SQLiteDatabase database = toDo_open_helper.getWritableDatabase();
                 ContentValues cv = new ContentValues();
-                cv.put(ToDo_Open_Helper.COL_NAME,tod.getName());
-                cv.put(ToDo_Open_Helper.COL_DESC,tod.getDescription());
-                cv.put(ToDo_Open_Helper.COL_DATE,tod.getDate());
-                cv.put(ToDo_Open_Helper.COL_TIME,tod.getTime());
-             long id =   database.insert(ToDo_Open_Helper.TABLE_NAME,null,cv);
-             Log.d("id",id + " ");
-             if(id > -1){
-                 tod.setID(id);
-                 tod.setID(id);
-               todoArrayList.add(tod);
-                 todoadap.notifyDataSetChanged();
-             }
+                cv.put(ToDo_Open_Helper.COL_NAME, tod.getName());
+                cv.put(ToDo_Open_Helper.COL_DESC, tod.getDescription());
+                cv.put(ToDo_Open_Helper.COL_DATE, tod.getDate());
+                cv.put(ToDo_Open_Helper.COL_TIME, tod.getTime());
 
+                long id = database.insert(ToDo_Open_Helper.TABLE_NAME, null, cv);
+                if (id > -1) {
+
+                    tod.setID(id);
+                    cv.put(ToDo_Open_Helper.COL_ID, tod.getID());
+                    todoArrayList.add(tod);
+                    todoadap.notifyDataSetChanged();
+                }
             }
         }
+        if(requestCode == 5 && resultCode == 9){
+            String name = data.getStringExtra("name");
+            String desc = data.getStringExtra("desc");
+            String date = data.getStringExtra("date");
+            String time = data.getStringExtra("time");
+            int id = data.getIntExtra("id",0);
+            int position = data.getIntExtra("position",0);
+            todo newtodo = new todo(name,desc);
+            newtodo.setDate(date);
+            newtodo.setID(id);
+            newtodo.setTime(time);
+            todoArrayList.set(position,newtodo);
+            todoadap.notifyDataSetChanged();
+        }
     }
+
 
 //    @Override
 //    protected void onStart() {

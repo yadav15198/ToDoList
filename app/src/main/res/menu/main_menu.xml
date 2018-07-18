@@ -11,6 +11,5 @@
      android:title="sendfeedback"/>
         <item android:id="@+id/list_item3"
             android:title="aboutus"/>
-
     </group>
 </menu>

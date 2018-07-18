@@ -14,7 +14,7 @@ public class ToDo_Open_Helper extends SQLiteOpenHelper {
     public static final String  COL_TIME = "TIME";
 
     public static final int version = 1 ;
-   // String TABLE_TODO,ID,NAME,DESCRIPTION,DATE,TIME;
+    // String TABLE_TODO,ID,NAME,DESCRIPTION,DATE,TIME;
     private static ToDo_Open_Helper INSTANCE;
 
     public static ToDo_Open_Helper getInstance(Context context){
@@ -30,8 +30,8 @@ public class ToDo_Open_Helper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-    String query = "CREATE TABLE  " + TABLE_NAME  + " (" +COL_ID + "  INTEGER PRIMARY KEY AUTOINCREMENT  ,  " +  COL_NAME  + "  TEXT, " +COL_DESC + " TEXT, " + COL_DATE +  " TEXT, " + COL_TIME+ " TEXT " + " )";
-    db.execSQL(query);
+        String query = "CREATE TABLE  " + TABLE_NAME  + " ( " +COL_ID + "  INTEGER PRIMARY KEY AUTOINCREMENT  ,  " +  COL_NAME  + "  TEXT, " +COL_DESC + " TEXT, " + COL_DATE +  " TEXT, " + COL_TIME+ " TEXT " + " )";
+        db.execSQL(query);
     }
 
     @Override
