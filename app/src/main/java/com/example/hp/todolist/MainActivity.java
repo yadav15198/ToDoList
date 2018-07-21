@@ -107,8 +107,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         todoArrayList.remove(pos);
-                        //String whereArgs[] = {COL_1 == pos};
-                        database.delete(TABLE_NAME,null,null);
+                       long id = tod.getID();
+                       // String whereArgs[] = {ToDo_Open_Helper.COL_ID = id};
+                        database.delete(TABLE_NAME,ToDo_Open_Helper.COL_ID + " = "+id,null);
                         todoadap.notifyDataSetChanged();
                     }
                 });
