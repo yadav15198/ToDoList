@@ -33,6 +33,11 @@ public class Edit_Activity extends AppCompatActivity  {
     int id;
 
     @Override
+    public void onBackPressed() {
+
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_);
@@ -129,10 +134,9 @@ public class Edit_Activity extends AppCompatActivity  {
                 calendar.set(year,month,day,hour,min);
 
                // contentValues.put(ToDo_Open_Helper.COL_DATE,calendar.getTimeInMillis());
-
+                setResult(2,intent);
                 database.update(ToDo_Open_Helper.TABLE_NAME,contentValues,ToDo_Open_Helper.COL_ID + " = "+id,null);
 
-                setResult(2,intent);
                 finish();
             }
         });
